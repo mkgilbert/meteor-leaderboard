@@ -7,8 +7,10 @@ if (Meteor.isClient) {
     // all of the following items as helper functions
     Template.leaderboard.helpers({
         "player": function(){
-            console.log("testing...");
-            return PlayerList.find();
+            return PlayerList.find(
+                       {},
+                       { sort: {score: -1, name: 1}} // sort by score descending first, then by name
+                   );
         },
         "totalPlayers": function(){
             console.log("getting total players...");
@@ -23,6 +25,11 @@ if (Meteor.isClient) {
                 return "selected";
             }
         },
+        "selectedPlayer": function(){
+            var selectedPlayer = Session.get('selectedPlayer');
+            // findOne is better for performance than find. It will stop at the first instance
+            return PlayerList.findOne({ _id: selectedPlayer });
+        }
     });
 
     // This adds event triggers to the different elements of the leaderboard template
@@ -33,6 +40,22 @@ if (Meteor.isClient) {
             // Create a session to allow control of elements in the template...
             Session.set('selectedPlayer', playerId);
         },
+        'click .increment': function(){
+            var playerId = Session.get('selectedPlayer');
+            player = PlayerList.find({_id: playerId}).fetch();
+            PlayerList.update(
+                {_id: playerId},
+                { $inc: {score: 5}}
+            )
+        },
+        'click .decrement': function(){
+            var playerId = Session.get('selectedPlayer');
+            player = PlayerList.find({_id: playerId}).fetch();
+            PlayerList.update(
+                {_id: playerId},
+                { $inc: {score: -5}}
+            )
+        }
     });
 }
 

@@ -2,7 +2,14 @@
     <p>Total players: {{totalPlayers}}</p>
     <ul>
     {{#each player}}    
-        <li class="player {{selectedClass}}">{{name}}: {{score}}</li>
+        <li class="player {{selectedClass}}">{{name}}: {{score}} </li>
     {{/each}}
+    {{#if selectedPlayer}}
+        <li><b>Selected Player: {{selectedPlayer.name}}</b></li>
+        <li>
+            <button class="increment">Give 5 points</button>
+            <button class="decrement">Take 5 points</button>
+        </li>
+    {{/if}}
     </ul>
 </template>
